@@ -16,22 +16,37 @@
 		},[
 			"delite/register",
 			"deliteful/MultiColumns",
+			"deliteful/Button",
 			"dojo/_base/lang",
 			"dojo/domReady!"
 		], function(register){
 			register.parse();
 		});
 	</script>
-
 </head>
 <body>
-<d-multi-columns style="width: 100%; height: 100%">
-	<div id="c1" style="background-color: #70b2ff; height: 100%">#1</div>
-	<div id="c2" style="background-color: #ddffdd; height: 100%">#2</div>
-	<div id="c3" style="background-color: #b03911; height: 100%">#3</div>
-	<div id="c4" style="background-color: #84aff4; height: 100%">#4</div>
-	<div id="c5" style="background-color: #cfe5fa; height: 100%">#5</div>
-	<div id="c6" style="background-color: #FFC871; height: 100%">#6</div>
-</d-multi-columns>
+<d-linear-layout style="height: 100%">
+	<div style="background-color: #123456">
+		<button is="d-button" onclick="mc.show(c1)">#1</button>
+		<button is="d-button" onclick="mc.show(c2)">#2</button>
+		<button is="d-button" onclick="mc.show(c3)">#3</button>
+		<button is="d-button" onclick="mc.show(c4)">#4</button>
+		<button is="d-button" onclick="mc.show(c5)">#5</button>
+		<button is="d-button" onclick="mc.show(c6)">#6</button>
+		<button is="d-button" onclick="mc.show(c7)">#7</button>
+		<button is="d-button" onclick="mc.show(c8)">#8</button>
+	</div>
+	<d-multi-columns id="mc" style="width: 100%; height: 100%" class="fill">
+		<div id="c1" style="background-color: #70b2ff;" onclick="mc.show(c1)">#1</div>
+		<div id="c2" style="background-color: #ddffdd;" onclick="mc.show(c2)">#2</div>
+		<div id="c3" style="background-color: #b03911;" onclick="mc.show(c3)">#3</div>
+		<div id="c4" style="background-color: #84aff4;" onclick="mc.show(c4)">#4</div>
+		<div id="c5" style="background-color: #cfe5fa;" onclick="mc.show(c5)">#5</div>
+		<div id="c6" style="background-color: #FFC871;" onclick="mc.show(c6)">#6</div>
+		<div id="c7" style="background-color: #366edf;" onclick="mc.show(c7)">#7</div>
+		<div id="c8" style="background-color: #61C6EB;" onclick="mc.show(c8)">#8</div>
+	</d-multi-columns>
+	<div style="background-color: #336699">Footer</div>
+</d-linear-layout>
 </body>
 </html>

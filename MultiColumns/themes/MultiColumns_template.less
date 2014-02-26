@@ -13,6 +13,30 @@
 @colcount-xlg: 5;
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+.d-multi-columns {
+  display: block;
+  overflow-x: hidden;
+  overflow-y: hidden;
+}
+
+.-d-multi-columns-force-display {
+  display: flex !important;
+}
+
+.-d-multi-columns-animate {
+  -moz-transition: -moz-transform @ANIMATION_DURATION @ANIMATION_STYLE;
+  -webkit-transition: -webkit-transform @ANIMATION_DURATION @ANIMATION_STYLE;
+  -ms-transition: -mstransform @ANIMATION_DURATION @ANIMATION_STYLE;
+  transition: transform @ANIMATION_DURATION @ANIMATION_STYLE;
+}
+
+.-d-multi-columns-hidden {
+  display: none;
+  visibility: hidden;
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 @-colcount-xsm: @colcount-xsm+1;
 @-colcount-sm: @colcount-sm+1;
 @-colcount-md: @colcount-md+1;
@@ -21,35 +45,35 @@
 
 // Extra small devices
 @media (max-width: @screen-sm-min) {
-  .d-multi-columns > .d-linear-layout > *:nth-child(n+@{-colcount-xsm}){
+   .d-multi-columns > .d-linear-layout > *:nth-child(n+@{-colcount-xsm}){
 	display: none;
   }
 }
 
 // Small devices
 @media (min-width: @screen-sm-min) and (max-width: @screen-sm-max) {
-  .d-multi-columns > .d-linear-layout > *:nth-child(n+@{-colcount-sm}){
+   .d-multi-columns > .d-linear-layout > *:nth-child(n+@{-colcount-sm}){
 	display: none;
   }
 }
 
 // Medium devices
 @media (min-width: @screen-md-min) and (max-width: @screen-md-max) {
-  .d-multi-columns > .d-linear-layout > :nth-child(n+@{-colcount-md}){
+   .d-multi-columns > .d-linear-layout > :nth-child(n+@{-colcount-md}){
 	display: none;
   }
 }
 
 // Large devices
 @media (min-width: @screen-lg-min) and (max-width: @screen-lg-max) {
-  .d-multi-columns > .d-linear-layout > :nth-child(n+@{-colcount-lg}){
+   .d-multi-columns > .d-linear-layout > :nth-child(n+@{-colcount-lg}){
 	display: none;
   }
 }
 
 // Extra large devices
 @media (min-width: @screen-lg-max) {
-  .d-multi-columns > .d-linear-layout > :nth-child(n+@{-colcount-xlg}){
+   .d-multi-columns > .d-linear-layout > :nth-child(n+@{-colcount-xlg}){
 	display: none;
   }
 
