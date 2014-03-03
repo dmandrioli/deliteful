@@ -44,35 +44,35 @@
 @-colcount-xlg: @colcount-xlg+1;
 
 // Extra small devices
-@media (max-width: @screen-sm-min) {
+@media screen and (max-width: @screen-sm-min) {
    .d-multi-columns > .d-linear-layout > *:nth-child(n+@{-colcount-xsm}){
 	display: none;
   }
 }
 
 // Small devices
-@media (min-width: @screen-sm-min) and (max-width: @screen-sm-max) {
+@media screen and (min-width: @screen-sm-min) and (max-width: @screen-sm-max) {
    .d-multi-columns > .d-linear-layout > *:nth-child(n+@{-colcount-sm}){
 	display: none;
   }
 }
 
 // Medium devices
-@media (min-width: @screen-md-min) and (max-width: @screen-md-max) {
+@media screen and (min-width: @screen-md-min) and (max-width: @screen-md-max) {
    .d-multi-columns > .d-linear-layout > :nth-child(n+@{-colcount-md}){
 	display: none;
   }
 }
 
 // Large devices
-@media (min-width: @screen-lg-min) and (max-width: @screen-lg-max) {
+@media screen and (min-width: @screen-lg-min) and (max-width: @screen-lg-max) {
    .d-multi-columns > .d-linear-layout > :nth-child(n+@{-colcount-lg}){
 	display: none;
   }
 }
 
 // Extra large devices
-@media (min-width: @screen-lg-max) {
+@media screen and (min-width: @screen-lg-max) {
    .d-multi-columns > .d-linear-layout > :nth-child(n+@{-colcount-xlg}){
 	display: none;
   }

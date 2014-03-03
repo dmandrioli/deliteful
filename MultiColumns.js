@@ -4,12 +4,13 @@ define(["dcl/dcl",
 	"dojo/Deferred",
 	"dojo/dom-geometry",
 	"dojo/dom-class",
+	"dojo/dom-construct",
 	"delite/register",
 	"delite/Widget",
 	"delite/DisplayContainer",
 	"deliteful/LinearLayout",
 	"delite/themes/load!./MultiColumns/themes/{{theme}}/MultiColumns_css"],
-	function (dcl, has, on, Deferred, domGeometry, domClass,
+	function (dcl, has, on, Deferred, domGeometry, domClass, domConstruct,
 			  register, Widget, DisplayContainer, LinearLayout) {
 		return register("d-multi-columns", [HTMLElement, Widget, DisplayContainer], {
 			// summary:
@@ -57,10 +58,22 @@ define(["dcl/dcl",
 				return new Deferred().promise;
 			},
 
-			show: dcl.superCall(function (sup) {
-				return function (dest, params) {
-					console.log(dest, params);
-					var children = this._ll.children;
+			_prepareAnimation: function (children, colCount, toAdd) {
+				for (var i = colCount; i < colCount + toAdd; i++) {
+					domClass.add(children[i], "-d-multi-columns-force-display");
+				}
+				var scaledWidth = 100 * (colCount + toAdd) / colCount + "%";
+				this._ll.style.width = scaledWidth;
+				// Return the translation value
+				return -100 * toAdd / (colCount + toAdd) + "%";
+			},
+			_translate: function (v) {
+				this._ll.style["-webkit-transform"] = "translate3d(V, 0px, 0px)".replace("V", v);
+				this._ll.style.transform = "translate3d(V, 0px, 0px)".replace("V", v);
+			},
+			show: dcl.superCall(function () {
+				return function (dest, /* jshint unused argument */ params) {
+					var i, children = this._ll.children, translation, colsToAdd = 0, colCount = 0;
 					if (!this._leftChild && children.length > 0) {
 						this._leftChild = children[0];
 					}
@@ -68,45 +81,55 @@ define(["dcl/dcl",
 						// This container has no children.
 						return;
 					}
-					var fromIndex, targetIndex, displayStyle, colCount, colCountFound;
-					for (var i = 0; i < children.length; i++) {
-						displayStyle = window.getComputedStyle(children[i]).getPropertyValue("display");
-						if (isNaN(fromIndex) && displayStyle !== "none") {
-							fromIndex = i;
-							colCount = 1;
+
+					// Count visible columns
+					for (i = 0; i < children.length; i++) {
+						if (window.getComputedStyle(children[i]).getPropertyValue("display") !== "none") {
+							colCount++;
 						}
 						else {
-							if (displayStyle !== "none") {
-								colCount++;
-							}
-							else {
-								colCountFound = true;
-							}
-						}
-						if (isNaN(targetIndex) && children[i] === dest) {
-							targetIndex = i;
-						}
-						if (colCountFound && !isNaN(fromIndex) && !isNaN(targetIndex)) {
 							break;
 						}
 					}
-					targetIndex = Math.min(targetIndex, children.length - colCount);
-					var toAdd = targetIndex - fromIndex;
-					var scaleFactor = 100 * (colCount + toAdd) / colCount + "%";
-					var transFactor = -100 * toAdd / (colCount + toAdd) + "%";
-					this._ll.style.width = scaleFactor;
 
-					for (i = 0; i < Math.min(children.length, colCount + toAdd); i++) {
-						domClass.add(children[i], "-d-multi-columns-force-display");
+					if (dest.parentNode === this._ll) {
+						// Slide to the right
+						for (i = 0; i < children.length; i++) {
+							if (colsToAdd === 0 && children[i] === dest) {
+								colsToAdd = i;
+								break;
+							}
+						}
+						colsToAdd = Math.min(colsToAdd, children.length - colCount);
+						translation = this._prepareAnimation(children, colCount, colsToAdd);
+						domClass.add(this._ll, "-d-multi-columns-animate");
+
+						// Must be called in performDisplay with event and deferred arguments
+						this._setAfterTransitionHandlers(children[colsToAdd], null, null);
+						this.defer(function () {
+							this._translate(translation);
+						}, 100);
+					} else {
+						// Slide to the left
+						var c;
+						for (i = this._hiddenPool.children.length - 1; i >= 0; i--) {
+							colsToAdd++;
+							c = this._hiddenPool.children[i];
+							domConstruct.place(c, this._ll, "first");
+							if (c === dest) {
+								break;
+							}
+						}
+
+						translation = this._prepareAnimation(children, colCount, colsToAdd);
+						this._translate(translation);
+
+						this._setAfterTransitionHandlers(dest, null, null);
+						this.defer(function () {
+							domClass.add(this._ll, "-d-multi-columns-animate");
+							this._translate("0px");
+						}, 100);
 					}
-					domClass.add(this._ll, "-d-multi-columns-animate");
-
-					// Must be called in performDisplay with event and deferred arguments
-					this._setAfterTransitionHandlers(children[targetIndex], null, null);
-					this.defer(function () {
-						this._ll.style["-webkit-transform"] = "translate3d(V, 0px, 0px)".replace("V", transFactor);
-						this._ll.style.transform = "translate3d(V, 0px, 0px)".replace("V", transFactor);
-					}, 100);
 					// DisplayContainer is not compatible for now
 					//return sup.apply(this, arguments);
 				};
@@ -134,7 +157,7 @@ define(["dcl/dcl",
 				for (var i = 0; i < this._ll.children.length; i++) {
 					domClass.remove(this._ll.children[i], "-d-multi-columns-force-display");
 				}
-
+				// Remove left siblings of the visible node
 				while (this._ll.children[0] !== endProps.node) {
 					this._hiddenPool.appendChild(this._ll.children[0]);
 				}
