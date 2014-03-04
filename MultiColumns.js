@@ -37,12 +37,10 @@ define(["dcl/dcl",
 					child = this.children[0];
 					this._ll.addChild(child);
 					domClass.add(child, "fill");
+					domClass.add(child, "-d-multi-columns-mq");
 				}
-
-
 				this.addChild(this._hiddenPool);
 				this.addChild(this._ll);
-
 			},
 
 			showNext: function (props) {
@@ -60,7 +58,7 @@ define(["dcl/dcl",
 
 			_prepareAnimation: function (children, colCount, toAdd) {
 				for (var i = colCount; i < colCount + toAdd; i++) {
-					domClass.add(children[i], "-d-multi-columns-force-display");
+					domClass.remove(children[i], "-d-multi-columns-mq");
 				}
 				var scaledWidth = 100 * (colCount + toAdd) / colCount + "%";
 				this._ll.style.width = scaledWidth;
@@ -72,7 +70,7 @@ define(["dcl/dcl",
 				this._ll.style.transform = "translate3d(V, 0px, 0px)".replace("V", v);
 			},
 			show: dcl.superCall(function () {
-				return function (dest, /* jshint unused argument */ params) {
+				return function (dest /*, params (unused)*/) {
 					var i, children = this._ll.children, translation, colsToAdd = 0, colCount = 0;
 					if (!this._leftChild && children.length > 0) {
 						this._leftChild = children[0];
@@ -155,7 +153,7 @@ define(["dcl/dcl",
 				domClass.remove(this._ll, "-d-multi-columns-animate");
 
 				for (var i = 0; i < this._ll.children.length; i++) {
-					domClass.remove(this._ll.children[i], "-d-multi-columns-force-display");
+					domClass.add(this._ll.children[i], "-d-multi-columns-mq");
 				}
 				// Remove left siblings of the visible node
 				while (this._ll.children[0] !== endProps.node) {
