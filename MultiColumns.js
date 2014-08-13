@@ -25,7 +25,7 @@ define(["dcl/dcl",
 			},
 
 			buildRendering: function () {
-				this._ll = new LinearLayout({vertical: false, style: "width: 100%; height: 100%;"});
+				this._ll = new LinearLayout({vertical: false, style: "position: absolute; width: 100%; height: 100%;"});
 				this._hiddenPool = document.createElement("div");
 				domClass.add(this._hiddenPool, "-d-multi-columns-hidden");
 				this._ll.startup();
@@ -41,6 +41,7 @@ define(["dcl/dcl",
 				}
 				this.addChild(this._hiddenPool);
 				this.addChild(this._ll);
+				this.containerNode = this._ll;
 			},
 
 			showNext: function (props) {
@@ -69,8 +70,10 @@ define(["dcl/dcl",
 				this._ll.style["-webkit-transform"] = "translate3d(V, 0px, 0px)".replace("V", v);
 				this._ll.style.transform = "translate3d(V, 0px, 0px)".replace("V", v);
 			},
-			show: dcl.superCall(function () {
+			show: dcl.superCall(function (sup) {
 				return function (dest /*, params (unused)*/) {
+
+					console.log(dest);
 					var i, children = this._ll.children, translation, colsToAdd = 0, colCount = 0;
 					if (!this._leftChild && children.length > 0) {
 						this._leftChild = children[0];
@@ -129,7 +132,7 @@ define(["dcl/dcl",
 						}, 100);
 					}
 					// DisplayContainer is not compatible for now
-					//return sup.apply(this, arguments);
+					return sup.apply(this, [dest]);
 				};
 			}),
 

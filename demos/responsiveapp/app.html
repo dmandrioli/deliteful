@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
+	<meta name="viewport"
+		  content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no"/>
+	<meta name="apple-mobile-web-app-capable" content="yes"/>
+	<title>Responsive Example</title>
+
+	<link rel="stylesheet" href="../../../delite/themes/defaultapp.css">
+	<link rel="stylesheet" href="app.css">
+	<script type="text/javascript" src="../../../requirejs/require.js"></script>
+	<script type="text/javascript">
+		require.config({
+			baseUrl: "../../../"
+		});
+	</script>
+
+	<script type="text/javascript">
+		require([
+			"delite/register",
+			"dstore/Request",
+			"deliteful/ScrollableContainer",
+			"deliteful/ViewStack",
+			"deliteful/SidePane",
+			"deliteful/LinearLayout",
+			"deliteful/MultiColumns",
+			"delite/theme!delite/themes/{{theme}}/global.css",	// page level CSS
+			"requirejs-domready/domReady!"
+		], function(register, Request, ScrollableContainer){
+			register.parse();
+
+			var url = "https://api.github.com/repos/ibm-js/deliteful/contents?ref=master";
+			var DEBUGEXTENSION = "";
+
+			fillData(url+DEBUGEXTENSION, 0);
+			function fillData(url, index){
+				var req = new Request({target:url});
+				var links = {};
+				req.fetch().then(function(obj){
+					//debugger;
+					var link;
+					var targetContainer;
+					var containers = document.querySelectorAll("d-scrollable-container");
+
+					if (index < containers.length){
+						targetContainer = containers[index];
+					}else{
+						debugger;
+						targetContainer = new ScrollableContainer();
+						targetContainer.className = "fill";
+						targetContainer.startup();
+						mc.addChild(targetContainer);
+					}
+					mc.show(targetContainer);
+					for (var i = index; i < containers.length; i++) {
+						while (containers[i].firstChild) {
+							containers[i].removeChild(containers[i].firstChild);
+						}
+					}
+					obj.sort(function(a, b){return a.type == "dir" ? -1 : 1});
+					for (var i = 0; i < obj.length; i++) {
+						link = document.createElement("a");
+						link.appendChild(document.createTextNode(obj[i].name));
+						if (obj[i].type == "dir"){
+							link.className = "directory";
+						}
+						link.href = obj[i].url + DEBUGEXTENSION;
+						link.onclick = function(event){
+							fillData(event.target.href, index+1);
+							event.stopImmediatePropagation();
+							event.preventDefault();
+						};
+						targetContainer.appendChild(link);
+					}
+
+				});
+			}
+		});
+	</script>
+	<style>
+		d-scrollable-container {
+			border-left: solid 1px black;
+			border-top: solid 1px black;
+			border-bottom: solid 1px black;
+		}
+		a:hover {
+			color: black;
+			text-decoration: none;
+		}
+		d-scrollable-container > a {
+			display: block;
+			padding: 5px;
+			font-size: 20px;
+		}
+		.directory {
+			font-weight: bold;
+			color: #d2322d;
+		}
+
+	</style>
+</head>
+<body>
+<d-linear-layout style="width: 100%; height: 100%">
+	<div style="background-color: #123456"><button onclick="mc.showPrevious()">Previous</button></div>
+	<div style="background-color: #123456"><button onclick="mc.showNext()">Next</button></div>
+	<d-multi-columns id="mc" class="fill">
+		<d-scrollable-container></d-scrollable-container>
+		<d-scrollable-container></d-scrollable-container>
+		<d-scrollable-container></d-scrollable-container>
+		<d-scrollable-container></d-scrollable-container>
+		<d-scrollable-container></d-scrollable-container>
+	</d-multi-columns>
+	<div style="background-color: #336699">Footer</div>
+</d-linear-layout>
+</body>
+</html>
