@@ -1,5 +1,5 @@
 define(["dcl/dcl",
-	"dojo/sniff",
+	"decor/sniff",
 	"dojo/on",
 	"dojo/Deferred",
 	"dojo/dom-geometry",
@@ -9,7 +9,7 @@ define(["dcl/dcl",
 	"delite/Widget",
 	"delite/DisplayContainer",
 	"deliteful/LinearLayout",
-	"delite/themes/load!./MultiColumns/themes/{{theme}}/MultiColumns_css"],
+	"delite/theme!./MultiColumns/themes/{{theme}}/MultiColumns.css"],
 	function (dcl, has, on, Deferred, domGeometry, domClass, domConstruct,
 			  register, Widget, DisplayContainer, LinearLayout) {
 		return register("d-multi-columns", [HTMLElement, Widget, DisplayContainer], {
