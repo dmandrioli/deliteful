@@ -20,10 +20,6 @@ define(["dcl/dcl",
 
 			baseClass: "d-multi-columns",
 
-			preCreate: function () {
-
-			},
-
 			buildRendering: function () {
 				this._ll = new LinearLayout({vertical: false, style: "position: absolute; width: 100%; height: 100%;"});
 				this._hiddenPool = document.createElement("div");
@@ -45,16 +41,19 @@ define(["dcl/dcl",
 			},
 
 			showNext: function (props) {
-				console.log(props);
+				var cdn = this._ll.children;
+				if (cdn.length === 0) {
+					return null;
+				}
+				return this.show(cdn.length >= 2 ? cdn[1] : cdn[0], props);
 			},
 
 			showPrevious: function (props) {
-				console.log(props);
-			},
-
-			performDisplay: function (widget, event) {
-				console.log(widget, event);
-				return new Deferred().promise;
+				var leftChildren = this._hiddenPool.children;
+				if (leftChildren.length === 0) {
+					return null;
+				}
+				return this.show(leftChildren[leftChildren.length - 1], props);
 			},
 
 			_prepareAnimation: function (children, colCount, toAdd) {
@@ -67,74 +66,78 @@ define(["dcl/dcl",
 				return -100 * toAdd / (colCount + toAdd) + "%";
 			},
 			_translate: function (v) {
+				// Dynamic CSS, can't be set in a stylesheet
 				this._ll.style["-webkit-transform"] = "translate3d(V, 0px, 0px)".replace("V", v);
 				this._ll.style.transform = "translate3d(V, 0px, 0px)".replace("V", v);
 			},
 			show: dcl.superCall(function (sup) {
-				return function (dest /*, params (unused)*/) {
-
-					console.log(dest);
-					var i, children = this._ll.children, translation, colsToAdd = 0, colCount = 0;
-					if (!this._leftChild && children.length > 0) {
-						this._leftChild = children[0];
-					}
-					if (!this._leftChild) {
+				return function (dest, params) {
+					var cdn = this.getChildren();
+					if (cdn.length === 0) {
 						// This container has no children.
 						return;
 					}
 
-					// Count visible columns
+					return sup.apply(this, [dest, params]);
+				};
+			}),
+
+			changeDisplay: function (widget, event) {
+
+				// Resolved when display is completed.
+				var deferred = new Deferred();
+				// Count visible columns (depends on widget media queries)
+				var i, children = this._ll.children, translation, colsToAdd = 0, colCount = 0;
+				for (i = 0; i < children.length; i++) {
+					if (window.getComputedStyle(children[i]).getPropertyValue("display") !== "none") {
+						colCount++;
+					}
+					else {
+						break;
+					}
+				}
+
+				if (widget.parentNode === this._ll) {
+					// Slide to the right
 					for (i = 0; i < children.length; i++) {
-						if (window.getComputedStyle(children[i]).getPropertyValue("display") !== "none") {
-							colCount++;
+						if (colsToAdd === 0 && children[i] === widget) {
+							colsToAdd = i;
+							break;
 						}
-						else {
+					}
+					colsToAdd = Math.min(colsToAdd, children.length - colCount);
+					translation = this._prepareAnimation(children, colCount, colsToAdd);
+					domClass.add(this._ll, "-d-multi-columns-animate");
+
+
+					this._setAfterTransitionHandlers(children[colsToAdd], event, deferred);
+					this.defer(function () {
+						this._translate(translation);
+					}, 100);
+				} else {
+					// Slide to the left
+					var c;
+					for (i = this._hiddenPool.children.length - 1; i >= 0; i--) {
+						colsToAdd++;
+						c = this._hiddenPool.children[i];
+						domConstruct.place(c, this._ll, "first");
+						if (c === widget) {
 							break;
 						}
 					}
 
-					if (dest.parentNode === this._ll) {
-						// Slide to the right
-						for (i = 0; i < children.length; i++) {
-							if (colsToAdd === 0 && children[i] === dest) {
-								colsToAdd = i;
-								break;
-							}
-						}
-						colsToAdd = Math.min(colsToAdd, children.length - colCount);
-						translation = this._prepareAnimation(children, colCount, colsToAdd);
+					translation = this._prepareAnimation(children, colCount, colsToAdd);
+					this._translate(translation);
+
+					this._setAfterTransitionHandlers(widget, null, null);
+					this.defer(function () {
 						domClass.add(this._ll, "-d-multi-columns-animate");
+						this._translate("0px");
+					}, 100);
+				}
 
-						// Must be called in performDisplay with event and deferred arguments
-						this._setAfterTransitionHandlers(children[colsToAdd], null, null);
-						this.defer(function () {
-							this._translate(translation);
-						}, 100);
-					} else {
-						// Slide to the left
-						var c;
-						for (i = this._hiddenPool.children.length - 1; i >= 0; i--) {
-							colsToAdd++;
-							c = this._hiddenPool.children[i];
-							domConstruct.place(c, this._ll, "first");
-							if (c === dest) {
-								break;
-							}
-						}
-
-						translation = this._prepareAnimation(children, colCount, colsToAdd);
-						this._translate(translation);
-
-						this._setAfterTransitionHandlers(dest, null, null);
-						this.defer(function () {
-							domClass.add(this._ll, "-d-multi-columns-animate");
-							this._translate("0px");
-						}, 100);
-					}
-					// DisplayContainer is not compatible for now
-					return sup.apply(this, [dest]);
-				};
-			}),
+				return deferred.promise;
+			},
 
 			_setAfterTransitionHandlers: function (node, event, deferred) {
 				var self = this, endProps = {
@@ -162,6 +165,26 @@ define(["dcl/dcl",
 				while (this._ll.children[0] !== endProps.node) {
 					this._hiddenPool.appendChild(this._ll.children[0]);
 				}
+			},
+
+			getChildren: function () {
+				// use Array.prototype.slice to transform the live HTMLCollection into an Array
+				var toArray = Array.prototype.slice;
+				return toArray.call(this._hiddenPool.children).concat(toArray.call(this._ll.children));
+			},
+
+			getVisibleChildren: function () {
+				var res = [];
+				var children = this._ll.children;
+				for (var i = 0; i < children.length; i++) {
+					if (window.getComputedStyle(children[i]).getPropertyValue("display") !== "none") {
+						res.push(children[i]);
+					}
+					else {
+						break;
+					}
+				}
+				return res;
 			}
 		});
 	});
