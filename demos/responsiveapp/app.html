@@ -98,12 +98,18 @@
 			color: #d2322d;
 		}
 
+		button {
+			width: 100px;
+		}
+
 	</style>
 </head>
 <body>
 <d-linear-layout style="width: 100%; height: 100%">
-	<div style="background-color: #123456"><button onclick="mc.showPrevious()">Previous</button></div>
-	<div style="background-color: #123456"><button onclick="mc.showNext()">Next</button></div>
+	<div style="background-color: #123456">
+		<button onclick="mc.showPrevious()">Previous</button>
+		<button onclick="mc.showNext()">Next</button>
+	</div>
 	<d-multi-columns id="mc" class="fill">
 		<d-scrollable-container></d-scrollable-container>
 		<d-scrollable-container></d-scrollable-container>
@@ -111,7 +117,7 @@
 		<d-scrollable-container></d-scrollable-container>
 		<d-scrollable-container></d-scrollable-container>
 	</d-multi-columns>
-	<div style="background-color: #336699">Footer</div>
+	<div style="text-align: right; padding-right: 10px;  background-color: #AAAAAA"><span class="directory">Directory</span> - <a>File</a></div>
 </d-linear-layout>
 </body>
 </html>
