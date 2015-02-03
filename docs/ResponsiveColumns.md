@@ -124,8 +124,11 @@ You can set height of `<body>` and `<html>` to 100% by including [`defaultapp.cs
 ## Enterprise Use
 
 ### Accessibility
-
-Relies on browser.
+|type|status|comment|
+|----|------|-------|
+|Keyboard|n/a| This layout widget is not interactive. |
+|Visual Formatting|n/a| This layout widget has no visual rendering. |
+|Screen Reader|n/a| This layout widget is not interactive. |
 
 ### Globalization
 

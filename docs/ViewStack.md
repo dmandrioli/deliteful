@@ -130,8 +130,11 @@ To fix this wrong behaviour, wrap the child into a block level element.
 ## Enterprise Use
 
 ### Accessibility
-
-Relies on browser.
+|type|status|comment|
+|----|------|-------|
+|Keyboard|n/a| This layout widget is not interactive. |
+|Visual Formatting|n/a| This layout widget has no visual rendering. |
+|Screen Reader|n/a| This layout widget is not interactive. |
 
 ### Globalization
 

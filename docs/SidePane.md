@@ -93,8 +93,11 @@ The following CSS layout attributes must **NOT** be changed. They are explicitly
 ## Enterprise Use
 
 ### Accessibility
-
-Relies on browser.
+|type|status|comment|
+|----|------|-------|
+|Keyboard|no| This container widget does not provide any keyboard interaction. |
+|Visual Formatting|n/a| This container widget has no visual rendering. |
+|Screen Reader|n/a| This container widget is not interactive. |
 
 ### Globalization
 

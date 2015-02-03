@@ -93,9 +93,13 @@ See [`deliteful/ViewStack`](./ViewStack.md) documentation for styling of the Vie
 ## Enterprise Use
 
 ### Accessibility
+|type|status|comment|
+|----|------|-------|
+|Keyboard|yes| Pressing the Page Up key shows the next child, pressing Page Down shows the previous child. |
+|Visual Formatting|n/a| This container widget has no visual rendering. |
+|Screen Reader|no| On focusing SwapView, screen readers announce the current selected child content. Nothing is announced when the selected child is changed using keyboard. |
 
-ViewStack provides keyboard accessibility support: pressing the Page Up key shows the next child,
-pressing Page Down shows the previous child.
+ViewStack provides keyboard accessibility support:
 
 ### Globalization
 
