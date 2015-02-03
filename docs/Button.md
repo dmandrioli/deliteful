@@ -112,6 +112,11 @@ This widget does not emit any custom event.
 ## Enterprise Use
 
 ### Accessibility
+|type|status|comment|
+|----|------|-------|
+|Keyboard|yes| |
+|Visual Formatting|yes| Support high contrast on Firefox and Internet Explorer desktop browsers.|
+|Screen Reader|yes| |
 
 The widget has the same accessibility than a standard HTML 5 `<button>` element.
 

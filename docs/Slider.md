@@ -169,14 +169,13 @@ No Mixin is currently provided for this widget.
 
 <a name="enterprise"></a>
 ## Enterprise Use
-### Accessibility
-The Slider supports WAI-ARIA role `slider` and ARIA attributes `aria-valuemin`, `aria-valuemax`, `aria-valuenow` and 
-`aria-orientation` on handle nodes.
 
+### Accessibility
 |type|status|comment|
 |----|------|-------|
-|Keyboard|ok|when handle has focus: `arrow left`, `arrow right` or `arrow up`, `arrow down` and `home`, `end` keys|
-|Visual Formatting|ok|Support high contrast on Firefox and Internet Explorer desktop browsers.|
+|Keyboard|yes|when handle has focus: `arrow left`, `arrow right` or `arrow up`, `arrow down` and `home`, `end` keys|
+|Visual Formatting|yes|Support high contrast on Firefox and Internet Explorer desktop browsers.|
+|Screen Reader|yes| The Slider supports WAI-ARIA role `slider` and ARIA attributes `aria-valuemin`, `aria-valuemax`, `aria-valuenow` and `aria-orientation` on handle nodes. When JAWS is enabled, typing ENTER is needed to edit a value. |
 
 ### Browser Support
 This widget supports all supported browsers without any degraded behavior.

@@ -139,10 +139,12 @@ This widget emits a `change` event when its value is updated following a user ac
 ## Enterprise Use
 
 ### Accessibility
+|type|status|comment|
+|----|------|-------|
+|Keyboard|yes| Unless it is read only, its value can be edited using the arrow keys. |
+|Visual Formatting|yes| Support high contrast on Firefox and Internet Explorer desktop browsers.|
+|Screen Reader|yes| The StarRating supports WAI-ARIA role `slider` and ARIA attributes `aria-valuemin`, `aria-valuemax`, `aria-valuenow`. When JAWS is enabled, typing ENTER is needed to edit the value. |
 
-The `StarRating` widget has an ARIA role of `slider`.
-
-It is keyboard navigable: unless it is read only, its value can be edited using the arrow keys (see [User Interactions](#interactions)).
 
 #### Limitation when using Apple VoiceOver
 
